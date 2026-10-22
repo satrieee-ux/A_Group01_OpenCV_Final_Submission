@@ -1,0 +1,7 @@
+folder,target_label,files,readable,used
+cardboard,(excluded),403,403,no
+glass,(excluded),501,501,no
+metal,metal_can,410,410,yes
+paper,paper,594,594,yes
+plastic,plastic_bottle,482,482,yes
+trash,(excluded),137,137,no
