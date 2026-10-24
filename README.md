@@ -6,7 +6,7 @@ Group: 01
 Members:
 - Christine Rotua Deborah Hutabarat (5026241028)
 - Ahmad Farhad Mabrury (5026241034)
-- Thalia Harnum Fathina (5026241206)
+- Thalia Harnum Fathina (5026241201)
 - Muhammad Satrio Adjie (5026241065)
 
 Educational prototype. Upload a photo of ONE waste item; the app predicts
