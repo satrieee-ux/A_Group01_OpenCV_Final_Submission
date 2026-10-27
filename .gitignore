@@ -1,0 +1,11 @@
+.venv/
+__pycache__/
+*.pyc
+data/raw/
+data/splits/*
+!data/splits/split.csv
+models/*
+!models/waste_classifier.pt
+outputs/tmp/
+.vscode/
+*.zip

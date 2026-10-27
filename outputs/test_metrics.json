@@ -1,0 +1,56 @@
+{
+  "n_test": 213,
+  "n_correct": 206,
+  "accuracy": 0.9671361502347418,
+  "accuracy_ci95": [
+    0.9337290979113806,
+    0.9839914870686233
+  ],
+  "threshold": 0.8,
+  "n_accepted": 194,
+  "accuracy_on_accepted": 0.979381443298969,
+  "per_class": {
+    "metal_can": {
+      "precision": 0.95,
+      "recall": 0.9661016949152542,
+      "f1-score": 0.957983193277311,
+      "support": 59.0
+    },
+    "paper": {
+      "precision": 0.9880952380952381,
+      "recall": 0.9764705882352941,
+      "f1-score": 0.9822485207100592,
+      "support": 85.0
+    },
+    "plastic_bottle": {
+      "precision": 0.9565217391304348,
+      "recall": 0.9565217391304348,
+      "f1-score": 0.9565217391304348,
+      "support": 69.0
+    }
+  },
+  "confusion_matrix": {
+    "labels": [
+      "metal_can",
+      "paper",
+      "plastic_bottle"
+    ],
+    "matrix": [
+      [
+        57,
+        0,
+        2
+      ],
+      [
+        1,
+        83,
+        1
+      ],
+      [
+        2,
+        1,
+        66
+      ]
+    ]
+  }
+}

@@ -1,0 +1,5 @@
+label,train,val,test,All
+metal_can,322,44,44,410
+paper,349,69,176,594
+plastic_bottle,205,237,40,482
+All,876,350,260,1486

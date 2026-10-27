@@ -1,0 +1,10 @@
+# Tested with Python 3.13.7 on Windows (CPU only)
+opencv-python==5.0.0.93
+numpy==2.5.4
+pillow==12.3.0
+pandas==3.0.6
+scikit-learn==1.9.1
+matplotlib==3.11.2
+streamlit==1.66.0
+torch==2.14.1
+torchvision==0.29.1
