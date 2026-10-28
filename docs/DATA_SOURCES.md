@@ -17,3 +17,15 @@
 
 ## Not included in the source code archive
 The dataset itself. Download it using the instructions in README.md.
+
+## NexTech14_Waste_Dataset (Phase 2)
+- Source: Mendeley Data, https://data.mendeley.com/datasets/p6hgv27jh4/1
+- DOI: 10.17632/p6hgv27jh4.1 (Version 1, published 10 November 2025)
+- Contributors as listed on the page: Md Abdus Salam, Farhana Akter, Abu Raihan,
+  Tanzin Amamed Shohag, Jahanara Pervin Juthy (Khwaja Yunus Ali University)
+- License: CC BY-NC 4.0 (non-commercial; verified on the dataset page on <11/11/2025>)
+- Downloaded on: <27/10/2026>
+- Local use: coursework only. The dataset is NOT redistributed in the source archive.
+- Note: the dataset page says its own train/val/test split was made after
+  augmentation. We do not use that split; see split_v2 procedure in the report.
+- Models trained on this data are treated as non-commercial as well.

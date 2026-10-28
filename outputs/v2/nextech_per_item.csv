@@ -1,0 +1,12 @@
+fine_class,images,source_images,augmented,not_augmented,images_per_source,category
+battery,2121,78,2043,78,27.2,b3
+e-waste,729,27,702,27,27.0,b3
+food-waste,1431,49,1382,49,29.2,organik
+garden-waste,293,9,284,9,32.6,organik
+glass,322,97,225,97,3.3,anorganik
+metal,602,189,413,189,3.2,anorganik
+other-organic,1226,44,1182,44,27.9,organik
+paper,314,110,204,110,2.9,anorganik
+plastic,1207,395,812,395,3.1,anorganik
+textile_fabric,389,117,272,117,3.3,residu
+trash,362,115,247,115,3.1,residu

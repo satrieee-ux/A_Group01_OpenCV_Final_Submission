@@ -1,0 +1,13 @@
+fine_class,test,train,val,All
+battery,11,56,11,78
+e-waste,4,19,4,27
+food-waste,7,35,7,49
+garden-waste,1,7,1,9
+glass,14,69,14,97
+metal,28,131,30,189
+other-organic,7,30,7,44
+paper,16,77,17,110
+plastic,60,276,59,395
+textile_fabric,19,81,17,117
+trash,17,81,17,115
+All,184,862,184,1230

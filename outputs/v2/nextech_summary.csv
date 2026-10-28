@@ -1,0 +1,5 @@
+cls,test,train,val,All
+hazardous,429,1994,427,2850
+organic,443,2065,442,2950
+recyclable,480,2237,479,3196
+All,1352,6296,1348,8996

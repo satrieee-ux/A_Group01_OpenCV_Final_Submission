@@ -1,0 +1,141 @@
+{
+  "arch": "mobilenet_v3_small (torchvision, ImageNet pretrained)",
+  "args": {
+    "head_epochs": 5,
+    "ft_epochs": 5,
+    "unfreeze_from": 9,
+    "lr_head": 0.001,
+    "lr_ft": 0.0001,
+    "batch_size": 32,
+    "samples_per_epoch": 2400
+  },
+  "seed": 42,
+  "image_size": 224,
+  "classes": [
+    "battery",
+    "e-waste",
+    "food-waste",
+    "garden-waste",
+    "glass",
+    "metal",
+    "other-organic",
+    "paper",
+    "plastic",
+    "textile_fabric",
+    "trash"
+  ],
+  "categories": [
+    "organik",
+    "anorganik",
+    "b3",
+    "residu"
+  ],
+  "class_to_category": {
+    "battery": "b3",
+    "e-waste": "b3",
+    "food-waste": "organik",
+    "garden-waste": "organik",
+    "glass": "anorganik",
+    "metal": "anorganik",
+    "other-organic": "organik",
+    "paper": "anorganik",
+    "plastic": "anorganik",
+    "textile_fabric": "residu",
+    "trash": "residu"
+  },
+  "train_files": 6380,
+  "val_files": 184,
+  "per_class": [
+    {
+      "class": "battery",
+      "category": "b3",
+      "train_files": 1524,
+      "train_sources": 56,
+      "val_files": 11
+    },
+    {
+      "class": "e-waste",
+      "category": "b3",
+      "train_files": 525,
+      "train_sources": 19,
+      "val_files": 4
+    },
+    {
+      "class": "food-waste",
+      "category": "organik",
+      "train_files": 1039,
+      "train_sources": 35,
+      "val_files": 7
+    },
+    {
+      "class": "garden-waste",
+      "category": "organik",
+      "train_files": 239,
+      "train_sources": 7,
+      "val_files": 1
+    },
+    {
+      "class": "glass",
+      "category": "anorganik",
+      "train_files": 224,
+      "train_sources": 69,
+      "val_files": 14
+    },
+    {
+      "class": "metal",
+      "category": "anorganik",
+      "train_files": 413,
+      "train_sources": 131,
+      "val_files": 30
+    },
+    {
+      "class": "other-organic",
+      "category": "organik",
+      "train_files": 843,
+      "train_sources": 30,
+      "val_files": 7
+    },
+    {
+      "class": "paper",
+      "category": "anorganik",
+      "train_files": 210,
+      "train_sources": 77,
+      "val_files": 17
+    },
+    {
+      "class": "plastic",
+      "category": "anorganik",
+      "train_files": 840,
+      "train_sources": 276,
+      "val_files": 59
+    },
+    {
+      "class": "textile_fabric",
+      "category": "residu",
+      "train_files": 273,
+      "train_sources": 81,
+      "val_files": 17
+    },
+    {
+      "class": "trash",
+      "category": "residu",
+      "train_files": 250,
+      "train_sources": 81,
+      "val_files": 17
+    }
+  ],
+  "best_epoch": 5,
+  "best_val_metrics": {
+    "loss": 0.2218419488357461,
+    "fine_acc": 0.9402173913043478,
+    "cat_acc": 0.9782608695652174,
+    "cat_f1": 0.9811274509803922,
+    "b3_recall": 1.0,
+    "n": 184
+  },
+  "training_time_seconds": 336.9,
+  "python": "3.13.7",
+  "torch": "2.14.1+cpu",
+  "torchvision": "0.29.1+cpu",
+  "device": "cpu"
+}
