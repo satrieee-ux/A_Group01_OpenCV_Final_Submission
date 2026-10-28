@@ -1,10 +1,13 @@
-"""Phase 2 Streamlit app: camera/upload -> category (4) + handling guidance.
-
+"""Phase 2 Streamlit app (styled): camera/upload -> 4 categories + handling guidance.
+ 
 Run from the project root:  py -m streamlit run app_v2.py
+Optional: put your banner image at assets/banner.png (used as the top banner).
 """
 import cv2
 import streamlit as st
-
+ 
+from src import ui_v2 as ui
+from src.config import PROJECT_ROOT
 from src.guidance_v2 import (
     B3_NOT_RECOGNIZED, B3_NOT_RECOGNIZED_INTRO, FOOTER, SOURCES, guidance_for,
 )
@@ -12,32 +15,21 @@ from src.predict_v2 import predict_bgr_v2
 from src.preprocessing import InvalidImageError, decode_image_bytes
 from src.taxonomy import CATEGORIES, CATEGORY_NAMES
 from src.v2_config import B3_CAUTION_THRESHOLD, CATEGORY_REJECT_THRESHOLD, MODEL_V2_PATH
-
+ 
 MAX_UPLOAD_MB = 10
-
-st.set_page_config(page_title="Asisten Pemilahan Sampah", page_icon="♻️")
-st.title("♻️ Asisten Klasifikasi dan Pemilahan Sampah")
-st.write(
-    "Foto atau unggah gambar **satu** barang. Aplikasi memperkirakan kategorinya "
-    "(**organik, anorganik, B3, residu**) dan menampilkan panduan penanganan umum."
-)
-st.caption(
-    "Alat bantu edukasi. Model hanya mengenal 11 jenis barang dan bisa salah. "
-    "Keyakinan model bukan peluang jawabannya benar."
-)
-
-if not MODEL_V2_PATH.exists():
-    st.error(f"File model tidak ditemukan: {MODEL_V2_PATH}. Jalankan training v2 terlebih dahulu.")
-    st.stop()
-
-
+BANNER = PROJECT_ROOT / "assets" / "banner.png"
+ 
+st.set_page_config(page_title="Asisten Pemilahan Sampah", page_icon="♻️", layout="centered")
+st.markdown(ui.CSS, unsafe_allow_html=True)
+ 
+ 
+def show(html_str: str):
+    st.markdown(html_str, unsafe_allow_html=True)
+ 
+ 
 def render_guidance(cat: str, manual: bool = False):
     g = guidance_for(cat)
-    if manual:
-        st.caption("Panduan berdasarkan pilihan Anda, bukan prediksi model.")
-    st.markdown(f"**{g['title']}**: {g['summary']}")
-    for i, (text, _tag) in enumerate(g["steps"], 1):
-        st.markdown(f"{i}. {text}")
+    show(ui.guidance_card(cat, g["title"], g["summary"], [t for t, _ in g["steps"]], manual))
     tags = sorted({t.strip() for _, tag in g["steps"] for t in tag.split(",")})
     with st.expander("Sumber panduan"):
         for t in tags:
@@ -46,59 +38,87 @@ def render_guidance(cat: str, manual: bool = False):
             else:
                 st.write(f"{t}: {SOURCES.get(t, t)}")
     st.caption(FOOTER)
-
-
-mode = st.radio("Sumber gambar", ["Kamera", "Unggah file"], horizontal=True)
-if mode == "Kamera":
-    shot = st.camera_input("Arahkan kamera ke satu barang, lalu ambil foto")
+ 
+ 
+# ---------- header ----------
+show(ui.hero_blue(BANNER))
+show(ui.hero_chips())
+st.caption(
+    "Alat bantu edukasi. Foto atau unggah gambar satu barang; model memperkirakan "
+    "kategorinya dan menampilkan panduan penanganan umum. Model hanya mengenal 11 jenis "
+    "barang dan bisa salah."
+)
+ 
+if not MODEL_V2_PATH.exists():
+    show(ui.err_box("Model tidak ditemukan",
+                    f"{MODEL_V2_PATH}. Jalankan training v2 terlebih dahulu."))
+    st.stop()
+ 
+# ---------- input source (two tiles) ----------
+if "mode" not in st.session_state:
+    st.session_state["mode"] = "camera"
+show(ui.section("Pilih sumber gambar"))
+col_cam, col_up = st.columns(2)
+if col_cam.button("📷  Kamera", key="mode_cam",
+                  type="primary" if st.session_state["mode"] == "camera" else "secondary"):
+    st.session_state["mode"] = "camera"
+    st.rerun()
+if col_up.button("🖼️  Unggah file", key="mode_up",
+                 type="primary" if st.session_state["mode"] == "upload" else "secondary"):
+    st.session_state["mode"] = "upload"
+    st.rerun()
+ 
+if st.session_state["mode"] == "camera":
+    shot = st.camera_input("Ambil foto satu barang", label_visibility="collapsed")
     if shot is None:
-        st.info("Belum ada foto. Jika kamera tidak muncul, izinkan akses kamera di browser.")
+        st.info("Belum ada foto. Jika kamera tidak muncul, izinkan akses kamera di browser "
+                "dan buka aplikasi lewat localhost.")
 else:
-    shot = st.file_uploader("Pilih gambar (JPG atau PNG)", type=["jpg", "jpeg", "png"])
+    shot = st.file_uploader("Pilih gambar (JPG atau PNG)", type=["jpg", "jpeg", "png"],
+                            label_visibility="collapsed")
     if shot is None:
         st.info("Belum ada gambar yang dipilih.")
-
+ 
 with st.expander("B3 lain yang tidak dikenali model"):
     st.write(B3_NOT_RECOGNIZED_INTRO)
     for text, _tag in B3_NOT_RECOGNIZED:
         st.markdown(f"- {text}")
-
+ 
 if shot is None:
     st.stop()
-
+ 
+# ---------- validation ----------
 data = shot.getvalue()
 if len(data) > MAX_UPLOAD_MB * 1024 * 1024:
-    st.error(f"Ukuran file lebih dari {MAX_UPLOAD_MB} MB. Pilih gambar yang lebih kecil.")
+    show(ui.err_box("File terlalu besar", f"Ukuran file lebih dari {MAX_UPLOAD_MB} MB. "
+                    "Pilih gambar yang lebih kecil."))
     st.stop()
 try:
     img_bgr = decode_image_bytes(data)
 except InvalidImageError as e:
-    st.error(f"Gambar tidak valid: {e} Silakan pilih file lain.")
+    show(ui.err_box("Gambar tidak valid", f"{e} Silakan pilih file lain."))
     st.stop()
-
-st.image(cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB), width=400)
-
+ 
+st.image(cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB), width=360)
+ 
+# ---------- prediction ----------
 try:
     with st.spinner("Mengklasifikasi ..."):
         pred = predict_bgr_v2(img_bgr)
 except Exception as e:  # shown to the user, never replaced by a made-up prediction
-    st.error(f"Klasifikasi gagal: {type(e).__name__}: {e}")
+    show(ui.err_box("Klasifikasi gagal", f"{type(e).__name__}: {e}"))
     st.stop()
-
-st.subheader("Hasil")
+ 
+show(ui.section("Hasil"))
 p_b3 = pred.category_probs["b3"]
 if pred.accepted:
-    box = st.error if pred.category == "b3" else st.success
-    box(f"Kategori: **{CATEGORY_NAMES[pred.category]}**")
-    st.write(f"Keyakinan model: **{pred.category_confidence:.1%}** | "
-             f"perkiraan jenis barang: **{pred.item}**")
+    show(ui.result_card(pred.category, pred.item, pred.category_confidence))
     if pred.b3_caution and pred.category != "b3":
-        st.error(f"PERINGATAN: ada kemungkinan {p_b3:.0%} bahwa ini sampah B3. "
-                 "Jika ragu, perlakukan sebagai B3.")
+        show(ui.err_box("PERINGATAN B3", f"Ada kemungkinan {p_b3:.0%} bahwa ini sampah B3. "
+                        "Jika ragu, perlakukan sebagai B3."))
     render_guidance(pred.category)
 else:
-    st.warning("Prediksi belum cukup andal untuk ditampilkan sebagai hasil.")
-    st.write(pred.message)
+    show(ui.err_box("Prediksi belum andal", pred.message))
     st.caption(f"Tebakan terdekat (keyakinan rendah, bukan hasil): "
                f"{CATEGORY_NAMES[pred.category]} ({pred.category_confidence:.1%}).")
     choice = st.selectbox(
@@ -107,14 +127,15 @@ else:
         format_func=lambda c: CATEGORY_NAMES[c])
     if choice:
         render_guidance(choice, manual=True)
-
+ 
 with st.expander("Rincian skor"):
     st.write("Skor per kategori (jumlah skor jenis barang di dalamnya):")
-    for c in CATEGORIES:
-        st.write(f"{CATEGORY_NAMES[c]}: {pred.category_probs[c]:.1%}")
-        st.progress(pred.category_probs[c])
+    show(ui.bars(pred.category_probs))
     st.write("Skor per jenis barang:")
     for item, p in sorted(pred.item_probs.items(), key=lambda kv: -kv[1]):
         st.write(f"{item}: {p:.1%}")
     st.write(f"Ambang penolakan: {CATEGORY_REJECT_THRESHOLD:.0%} | "
              f"ambang peringatan B3: {B3_CAUTION_THRESHOLD:.0%}")
+ 
+st.caption("Keyakinan model bukan peluang jawabannya benar, dan penolakan berdasarkan "
+           "keyakinan tidak menjamin barang di luar jenis yang dikenali selalu ditolak.")
